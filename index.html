@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>thangs page</title>
+    <link href="css/simplesubscriptionpopup.css" rel="stylesheet">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/simplesubscriptionpopup.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+</head>
+<body>
+<button class="popupclick"> Sign Up</button>
+<div id="ssp-form" class="simplesignuppro"></div>
+<p>Pop up the sign-up modal after 5 seconds into the site for non subscribed deviced, if already signed up it wont show.
+Thang</p>
+
+
+
+<script type="text/javascript">
+
+    // initalize firebase
+    var ref = new Firebase('https://signup123.firebaseio.com/');
+    var emailRef = ref.child('email');
+
+
+    $( document ).ready( function() {
+        //shows in 5 seconds
+        var $limit = 5;
+        var idleTime = 0;
+
+        $('.popupclick').click(function(){
+            $("#ssp-form").sspopup(sspopupsettings);
+            clearInterval(idleInterval);
+        });
+//shows once per browser session
+        if(sessionStorage.getItem('signup') != 'signedup'){
+            function timerIncrement() {
+                idleTime = idleTime + 1;
+                if (idleTime > $limit) {
+                    $("#ssp-form").sspopup(sspopupsettings);
+                    clearInterval(idleInterval);
+                }
+            }
+            var idleInterval = setInterval(timerIncrement, 1000);
+        }
+
+
+    });
+
+
+    var sspopupsettings = {
+        mode:'mail',
+        animtime: 0.4,
+        animation:'perspectivein',
+        autoopen: true,
+        customfields:'[]',
+        facebook_appid:'',
+        googleplus_clientid:"",
+        googleplus_apikey:"",
+        customfieldsmargin:'0px',
+        bgcolor:'rgb(255, 255, 255)',
+        lockbgcolor:'#000',
+        buttonbgcolor:'rgb(199, 18, 47)',
+        buttoncolor:'rgb(255, 255, 255)',
+        closecolor:'rgb(0, 0, 0)',
+        closefontsize:'12px',
+        color:'rgb(0, 0, 0)',
+        contentcolor:'rgb(0, 0, 0)',
+        fontfamily:'Source Sans Pro',
+        contentfontfamily:'Source Sans Pro',
+        openwithlink: true,
+        contentfontsize:'14px',
+        contentweight:'normal',
+        title:'NEWSLETTER',
+        bottomtitle:'Live the best of your life for the rest of your life.',
+        text:'Your weekly dose of health, wellness, fitness, nature beauty and healthy eating.',
+        vspace:'60px',
+        hspace:'10px',
+        timer: 0,
+        position:'centercenter',
+        invalid_address:'INVALID ADDRESS',
+        signup_success:'SIGNUP SUCCESS!',
+        borderradius:'4px',
+        inputborderradius:'0px',
+        openbottom: false,
+        fontsize:'20px',
+        fontweight:'bold',
+        double_optin: false,
+        update_existing: true,
+        replace_interests: false,
+        send_welcome: false,
+        mailchimp_listid: false,
+        once_per_user: false,
+        cookie_days:'999',
+        once_per_filled: false,
+        filled_cookie_days:'999',
+        subscribe_text:'SUBSCRIBE',
+        placeholder_text:'Enter your email address',
+        lock: true,
+        closewithlayer: true,
+        hideclose: false,
+        preset:'custom',
+        trackform: true,
+        media:"",
+        mediawidth:"",
+        mediaheight:"",
+        mediapos:4,
+        yaplay:false,
+        yinfo:false,
+        yloop:false,
+        ycontrols:false,
+        imgrepeat:false,
+        imgopacity:1,
+        embed:'',
+        elemanimation:'elemscale',
+        width: "100%",
+        visible: true,
+        redirecturl: "",
+        formid: "12345",
+        callBack: function(){
+
+
+
+
+            console.log("this is your value");
+            console.log($('.ssp_email').val());
+
+
+//firebase logic
+            var $email = $('.ssp_email').val();
+            emailRef.push( $email, function(error){
+                if (error) {
+                    alert("Data could not be saved." + error);
+                } else {
+                    //set to signedup during firebase post callback (will not fire again this session)
+                    sessionStorage.setItem('signup', 'signedup');
+                }
+            });
+
+
+
+        },
+
+
+
+        onSubmit: function(){
+        },
+        onShow: function(){
+
+        },
+        onHide: function(){},
+        onClose: function(){}
+    }
+
+
+
+</script>
+</body>
+</html>
